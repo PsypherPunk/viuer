@@ -21,15 +21,17 @@ mod iterm;
 pub use iterm::iTermPrinter;
 pub use iterm::is_iterm_supported;
 
+/// TODO
 pub trait Printer {
-    // Print the given image in the terminal while respecting the options in the config struct.
-    // Return the dimensions of the printed image in **terminal cells**.
+    /// Print the given image in the terminal while respecting the options in the config struct.
+    /// Return the dimensions of the printed image in **terminal cells**.
     fn print(
         &self,
         stdout: &mut impl Write,
         img: &DynamicImage,
         config: &Config,
     ) -> ViuResult<(u32, u32)>;
+    /// TODO
     fn print_from_file<P: AsRef<Path>>(
         &self,
         stdout: &mut impl Write,
@@ -43,10 +45,14 @@ pub trait Printer {
     }
 }
 
+/// TODO
 #[allow(non_camel_case_types)]
 pub enum PrinterType {
+    /// TODO
     Block,
+    /// TODO
     Kitty,
+    /// TODO
     iTerm,
     #[cfg(feature = "sixel")]
     Sixel,

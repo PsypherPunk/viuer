@@ -5,7 +5,7 @@ use crate::Config;
 use ansi_colours::ansi256_from_rgb;
 use image::{DynamicImage, GenericImageView, Rgba};
 use std::io::Write;
-use termcolor::{BufferedStandardStream, Color, ColorChoice, ColorSpec, WriteColor};
+use termcolor::{Buffer, Color, ColorSpec, WriteColor};
 
 use crossterm::cursor::MoveRight;
 use crossterm::execute;
@@ -16,18 +16,23 @@ const LOWER_HALF_BLOCK: &str = "\u{2584}";
 const CHECKERBOARD_BACKGROUND_LIGHT: (u8, u8, u8) = (153, 153, 153);
 const CHECKERBOARD_BACKGROUND_DARK: (u8, u8, u8) = (102, 102, 102);
 
+/// TODO
 pub struct BlockPrinter;
 
 impl Printer for BlockPrinter {
     fn print(
         &self,
-        // TODO: The provided object is not used because termcolor needs an implementation of the WriteColor trait
-        _stdout: &mut impl Write,
+        stdout: &mut impl Write,
         img: &DynamicImage,
         config: &Config,
     ) -> ViuResult<(u32, u32)> {
-        let mut stream = BufferedStandardStream::stdout(ColorChoice::Always);
-        print_to_writecolor(&mut stream, img, config)
+        let mut buffer = Buffer::ansi();
+
+        let result = print_to_writecolor(&mut buffer, img, config);
+        // TODO: excessive copy due to Write vs. WriteColor.
+        stdout.write(buffer.as_slice())?;
+
+        result
     }
 }
 
